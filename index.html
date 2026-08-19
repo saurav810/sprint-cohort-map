@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint Cohort Map</title>
+<title>Meet the Sprint Cohort</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@800&display=swap" rel="stylesheet">
@@ -360,7 +360,7 @@
 
 <main>
   <section class="intro">
-    <h1>Sprint Cohort Map</h1>
+    <h1>Meet the Sprint Cohort</h1>
     <p>Explore the jurisdictions and teams participating in this Sprint. Select a jurisdiction to see who is participating and connect with members of the cohort.</p>
   </section>
 
@@ -663,7 +663,7 @@ function polygonStyleFor(j) {
   const isTeamHighlighted = state.highlightedTeam && j.team === state.highlightedTeam;
 
   if (filteredOut) {
-    return { color: "#c7c9cc", weight: 1, fillColor: "#e9eaeb", fillOpacity: 0.5 };
+    return { stroke: false, fillColor: "#9aa0a6", fillOpacity: 0.08 };
   }
   if (isSelected) {
     return { color: "#0f1f38", weight: 3, fillColor: "#2e6da4", fillOpacity: 0.65 };
