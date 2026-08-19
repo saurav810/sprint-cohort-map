@@ -61,26 +61,6 @@
     white-space: nowrap; border: 0;
   }
 
-  /* ---------- Header ---------- */
-  header.app-header {
-    background: var(--navy);
-    color: var(--white);
-    padding: 18px 24px;
-    border-bottom: 4px solid var(--blue);
-  }
-  header.app-header .brand {
-    font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: 0.01em;
-  }
-  header.app-header .brand span {
-    font-weight: 400;
-    color: #b9c6d9;
-    font-size: 0.85rem;
-    display: block;
-    margin-top: 2px;
-  }
-
   main {
     max-width: 1200px;
     margin: 0 auto;
@@ -214,7 +194,9 @@
     overflow: hidden;
   }
   #map {
-    height: 560px;
+    height: 70vh;
+    min-height: 380px;
+    max-height: 700px;
     width: 100%;
     background: #e7e9ea;
   }
@@ -252,7 +234,7 @@
     border: 1px solid var(--gray-300);
     border-radius: 8px;
     padding: 20px;
-    min-height: 560px;
+    min-height: 380px;
   }
   .panel-empty {
     color: var(--gray-500);
@@ -376,13 +358,6 @@
 </head>
 <body>
 
-<header class="app-header">
-  <div class="brand">
-    Sprint Cohort Map
-    <span>Community implementation program</span>
-  </div>
-</header>
-
 <main>
   <section class="intro">
     <h1>Sprint Cohort Map</h1>
@@ -431,7 +406,7 @@
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><polygon points="8,1 14.2,4.5 14.2,11.5 8,15 1.8,11.5 1.8,4.5" fill="#8fb8dd" stroke="#2e6da4" stroke-width="1.5"/></svg>
           County / parish
         </span>
-        <span class="legend-note">Shapes are approximate — centered on each jurisdiction, not true boundaries.</span>
+        <span class="legend-note">Shapes are approximate — centered on each jurisdiction, not true boundaries. Click the map to enable scroll-to-zoom.</span>
       </div>
     </div>
     <div class="panel" id="panel" tabindex="-1" aria-live="polite">
@@ -643,12 +618,24 @@ function renderSummary() {
 }
 
 function initMap() {
-  map = L.map("map", { scrollWheelZoom: true }).setView([39.5, -95], 4);
+  // scrollWheelZoom starts disabled so an ordinary mouse-wheel scroll over the
+  // map scrolls the embedding page/iframe instead of zooming the map; it's
+  // enabled on click/focus and disabled again once the user moves away.
+  map = L.map("map", { scrollWheelZoom: false }).setView([39.5, -95], 4);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 18,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
   }).addTo(map);
   layerGroup = L.layerGroup().addTo(map);
+
+  map.on("click", () => map.scrollWheelZoom.enable());
+  map.getContainer().addEventListener("mouseleave", () => map.scrollWheelZoom.disable());
+
+  // Keeps Leaflet's internal size in sync when the surrounding iframe is
+  // resized by the host page (e.g. a responsive embed or orientation change).
+  window.addEventListener("resize", () => {
+    if (state.view === "map") map.invalidateSize();
+  });
 }
 
 /* =========================================================================
@@ -812,7 +799,7 @@ function renderPanel() {
         <div class="participant-card">
           <div class="p-name">${m.name}</div>
           <div class="p-role">${[m.jobTitle, m.org].filter(Boolean).join(" · ")}</div>
-          ${m.profileUrl ? `<a href="${m.profileUrl}" aria-label="View ${m.name}'s profile">View profile</a>` : ""}
+          ${m.profileUrl ? `<a href="${m.profileUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${m.name}'s profile (opens in new tab)">View profile</a>` : ""}
         </div>`;
     });
   }
@@ -860,7 +847,7 @@ function renderList() {
             <div class="participant-card">
               <div class="p-name">${m.name}</div>
               <div class="p-role">${[m.jobTitle, m.org].filter(Boolean).join(" · ")}</div>
-              ${m.profileUrl ? `<a href="${m.profileUrl}" aria-label="View ${m.name}'s profile">View profile</a>` : ""}
+              ${m.profileUrl ? `<a href="${m.profileUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${m.name}'s profile (opens in new tab)">View profile</a>` : ""}
             </div>
           `).join("")}
       </div>
