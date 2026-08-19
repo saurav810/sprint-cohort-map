@@ -682,12 +682,12 @@ function polygonStyleFor(j) {
     return { stroke: false, fillColor: "#9aa0a6", fillOpacity: 0.08 };
   }
   if (isSelected) {
-    return { color: "#0f1f38", weight: 3, fillColor: "#2e6da4", fillOpacity: 0.65 };
+    return { stroke: true, color: "#0f1f38", weight: 3, fillColor: "#2e6da4", fillOpacity: 0.65 };
   }
   if (isTeamHighlighted) {
-    return { color: "#1a4d80", weight: 2.5, fillColor: "#5b9bd5", fillOpacity: 0.55 };
+    return { stroke: true, color: "#1a4d80", weight: 2.5, fillColor: "#5b9bd5", fillOpacity: 0.55 };
   }
-  return { color: "#2e6da4", weight: 1.5, fillColor: "#8fb8dd", fillOpacity: 0.35 };
+  return { stroke: true, color: "#2e6da4", weight: 1.5, fillColor: "#8fb8dd", fillOpacity: 0.35 };
 }
 
 /** Builds a regular hexagon (array of [lat,lng]) centered on a point.
@@ -889,10 +889,12 @@ function bindEvents() {
   });
   document.getElementById("btn-reset").addEventListener("click", () => {
     state.team = ""; state.status = ""; state.govType = ""; state.population = "";
+    state.selectedId = null; state.highlightedTeam = null;
     document.getElementById("filter-team").value = "";
     document.getElementById("filter-status").value = "";
     document.getElementById("filter-govtype").value = "";
     document.getElementById("filter-population").value = "";
+    renderPanel();
     onFilterChange();
   });
 
